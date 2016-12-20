@@ -62,6 +62,8 @@ func TestRktStop(t *testing.T) {
 
 	// Run tests
 	for i, tt := range tests {
+		//let's time it
+		startTime := time.Now()
 		// Prepare image
 		cmd := fmt.Sprintf("%s --insecure-options=image prepare %s", ctx.Cmd(), image)
 		podUUID := runRktAndGetUUID(t, cmd)
@@ -90,13 +92,15 @@ func TestRktStop(t *testing.T) {
 
 		runCmd := fmt.Sprintf("%s %s %s", ctx.Cmd(), tt.cmd, args)
 		t.Logf("Running test #%d, %s", i, runCmd)
+		spawnTime := time.Now()
 		spawnOrFail(t, runCmd)
 
 		// Make sure the pod is stopped
 		var podInfo *podInfo
 		exitedSuccessfully := false
-		for i := 0; i < 30; i++ {
-			time.Sleep(500 * time.Millisecond)
+		//Wait for 5 seconds - fine granularity (100mS)
+		for i := 0; i < 50; i++ {
+			time.Sleep(100 * time.Millisecond)
 			podInfo = getPodInfo(t, ctx, podUUID)
 			if podInfo.state == "exited" {
 				exitedSuccessfully = true
@@ -105,7 +109,22 @@ func TestRktStop(t *testing.T) {
 		}
 		if !exitedSuccessfully {
 			t.Fatalf("Expected pod %q to be exited, but it is %q", podUUID, podInfo.state)
+			t.Fatalf(" wait some more...")
+			//wait another good while to see if we were just too hasty
+			//we don't need such a fine granularity here...
+			for i := 0; i < 120; i++ {
+				time.Sleep(500 * time.Millisecond)
+				podInfo = getPodInfo(t, ctx, podUUID)
+				if podInfo.state == "exited" {
+					exitedSuccessfully = true
+					break
+				}
+			}
 		}
+
+		stopTime := time.Now()
+		t.Logf(" test #%d took %s to spawn", i, spawnTime.Sub(startTime))
+		t.Logf(" test #%d took %s overall", i, stopTime.Sub(startTime))
 
 		exitStatus := 0
 		if tt.expectKill {
