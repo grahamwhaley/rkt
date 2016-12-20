@@ -58,6 +58,276 @@ func TestRktStop(t *testing.T) {
 			true,
 			false,
 		},
+		// Test regular stop
+		{
+			"stop",
+			false,
+			false,
+		},
+		// Test forced stop
+		{
+			"stop --force",
+			false,
+			true,
+		},
+		// Test uuid-file
+		{
+			"stop",
+			true,
+			false,
+		},
+		// Test regular stop
+		{
+			"stop",
+			false,
+			false,
+		},
+		// Test forced stop
+		{
+			"stop --force",
+			false,
+			true,
+		},
+		// Test uuid-file
+		{
+			"stop",
+			true,
+			false,
+		},
+		// Test regular stop
+		{
+			"stop",
+			false,
+			false,
+		},
+		// Test forced stop
+		{
+			"stop --force",
+			false,
+			true,
+		},
+		// Test uuid-file
+		{
+			"stop",
+			true,
+			false,
+		},
+		// Test regular stop
+		{
+			"stop",
+			false,
+			false,
+		},
+		// Test forced stop
+		{
+			"stop --force",
+			false,
+			true,
+		},
+		// Test uuid-file
+		{
+			"stop",
+			true,
+			false,
+		},
+		// Test regular stop
+		{
+			"stop",
+			false,
+			false,
+		},
+		// Test forced stop
+		{
+			"stop --force",
+			false,
+			true,
+		},
+		// Test uuid-file
+		{
+			"stop",
+			true,
+			false,
+		},
+		// Test regular stop
+		{
+			"stop",
+			false,
+			false,
+		},
+		// Test forced stop
+		{
+			"stop --force",
+			false,
+			true,
+		},
+		// Test uuid-file
+		{
+			"stop",
+			true,
+			false,
+		},
+		// Test regular stop
+		{
+			"stop",
+			false,
+			false,
+		},
+		// Test forced stop
+		{
+			"stop --force",
+			false,
+			true,
+		},
+		// Test uuid-file
+		{
+			"stop",
+			true,
+			false,
+		},
+		// Test regular stop
+		{
+			"stop",
+			false,
+			false,
+		},
+		// Test forced stop
+		{
+			"stop --force",
+			false,
+			true,
+		},
+		// Test uuid-file
+		{
+			"stop",
+			true,
+			false,
+		},
+		// Test regular stop
+		{
+			"stop",
+			false,
+			false,
+		},
+		// Test forced stop
+		{
+			"stop --force",
+			false,
+			true,
+		},
+		// Test uuid-file
+		{
+			"stop",
+			true,
+			false,
+		},
+		// Test regular stop
+		{
+			"stop",
+			false,
+			false,
+		},
+		// Test forced stop
+		{
+			"stop --force",
+			false,
+			true,
+		},
+		// Test uuid-file
+		{
+			"stop",
+			true,
+			false,
+		},
+		// Test regular stop
+		{
+			"stop",
+			false,
+			false,
+		},
+		// Test forced stop
+		{
+			"stop --force",
+			false,
+			true,
+		},
+		// Test uuid-file
+		{
+			"stop",
+			true,
+			false,
+		},
+		// Test regular stop
+		{
+			"stop",
+			false,
+			false,
+		},
+		// Test forced stop
+		{
+			"stop --force",
+			false,
+			true,
+		},
+		// Test uuid-file
+		{
+			"stop",
+			true,
+			false,
+		},
+		// Test regular stop
+		{
+			"stop",
+			false,
+			false,
+		},
+		// Test forced stop
+		{
+			"stop --force",
+			false,
+			true,
+		},
+		// Test uuid-file
+		{
+			"stop",
+			true,
+			false,
+		},
+		// Test regular stop
+		{
+			"stop",
+			false,
+			false,
+		},
+		// Test forced stop
+		{
+			"stop --force",
+			false,
+			true,
+		},
+		// Test uuid-file
+		{
+			"stop",
+			true,
+			false,
+		},
+		// Test regular stop
+		{
+			"stop",
+			false,
+			false,
+		},
+		// Test forced stop
+		{
+			"stop --force",
+			false,
+			true,
+		},
+		// Test uuid-file
+		{
+			"stop",
+			true,
+			false,
+		},
 	}
 
 	// Run tests
@@ -108,8 +378,8 @@ func TestRktStop(t *testing.T) {
 			}
 		}
 		if !exitedSuccessfully {
-			t.Fatalf("Expected pod %q to be exited, but it is %q", podUUID, podInfo.state)
-			t.Fatalf(" wait some more...")
+			t.Logf("Expected pod %q to be exited, but it is %q", podUUID, podInfo.state)
+			t.Logf(" wait some more...")
 			//wait another good while to see if we were just too hasty
 			//we don't need such a fine granularity here...
 			for i := 0; i < 120; i++ {
@@ -123,6 +393,11 @@ func TestRktStop(t *testing.T) {
 		}
 
 		stopTime := time.Now()
+
+		if !exitedSuccessfully {
+			t.Fatalf("Expected pod %q to be exited, but it is %q after %s", podUUID, podInfo.state, stopTime.Sub(startTime))
+		}
+
 		t.Logf(" test #%d took %s to spawn", i, spawnTime.Sub(startTime))
 		t.Logf(" test #%d took %s overall", i, stopTime.Sub(startTime))
 
