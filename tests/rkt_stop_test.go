@@ -347,6 +347,10 @@ func TestRktStop(t *testing.T) {
 			t.Fatalf("Can't start pod")
 		}
 
+		//Just dump initial podinfo for reference
+		var podInfo *podInfo
+		//podInfo = getPodInfoVerbose(t, ctx, podUUID)
+
 		args := podUUID
 		if tt.uuidFile {
 			uuidFile, err := ioutil.TempFile(tmpDir, "uuid-file")
@@ -366,7 +370,6 @@ func TestRktStop(t *testing.T) {
 		spawnOrFail(t, runCmd)
 
 		// Make sure the pod is stopped
-		var podInfo *podInfo
 		exitedSuccessfully := false
 		//Wait for 5 seconds - fine granularity (100mS)
 		for i := 0; i < 50; i++ {
@@ -393,8 +396,12 @@ func TestRktStop(t *testing.T) {
 		}
 
 		stopTime := time.Now()
+		//and dump the podinfo again, for reference
+		//podInfo = getPodInfoVerbose(t, ctx, podUUID)
 
 		if !exitedSuccessfully {
+			//And now dump the info we got...to try and diagnose!
+			podInfo = getPodInfoVerbose(t, ctx, podUUID)
 			t.Fatalf("Expected pod %q to be exited, but it is %q after %s", podUUID, podInfo.state, stopTime.Sub(startTime))
 		}
 

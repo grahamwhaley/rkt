@@ -669,6 +669,46 @@ func getPodInfo(t *testing.T, ctx *testutils.RktRunCtx, podID string) *podInfo {
 	return p
 }
 
+// getPodInfoVerbose returns the pod info for the given pod ID, whilst dumping info
+func getPodInfoVerbose(t *testing.T, ctx *testutils.RktRunCtx, podID string) *podInfo {
+	p := &podInfo{
+		id:       podID,
+		pid:      -1,
+		apps:     make(map[string]*appInfo),
+		networks: make(map[string]*networkInfo),
+	}
+
+	// Read pod manifest.
+	output, err := exec.Command("/bin/bash", "-c", fmt.Sprintf("%s cat-manifest %s", ctx.Cmd(), podID)).CombinedOutput()
+	if err != nil {
+		t.Fatalf("Unexpected error: %v", err)
+	}
+
+	t.Logf("Manifest %s", output)
+	// Trim the last '\n' character.
+	mfst := bytes.TrimSpace(output)
+
+	// Fill app infos.
+	if err := json.Unmarshal(mfst, &p.manifest); err != nil {
+		t.Fatalf("Unexpected error: %v", err)
+	}
+	for _, app := range p.manifest.Apps {
+		appName := app.Name.String()
+		p.apps[appName] = &appInfo{
+			name: appName,
+			// TODO(yifan): Get the image's name.
+			image: &imageInfo{id: app.Image.ID.String()},
+		}
+	}
+
+	// Fill other infos.
+	output, _ = exec.Command("/bin/bash", "-c", fmt.Sprintf("%s status %s", ctx.Cmd(), podID)).CombinedOutput()
+	t.Logf("Status %s", output)
+	parsePodInfoOutput(t, string(output), p)
+
+	return p
+}
+
 // parseImageInfoOutput parses the 'rkt image list' result into imageInfo struct.
 // For example, the 'result' can be:
 // 'sha512-e9b77714dbbfda12cb9e136318b103a6f0ce082004d09d0224a620d2bbf38133 nginx:latest 2015-10-16 17:42:57.741 -0700 PDT true'
