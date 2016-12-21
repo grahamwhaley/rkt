@@ -413,5 +413,10 @@ func TestRktStop(t *testing.T) {
 			exitStatus = -1
 		}
 		waitOrFail(t, child, exitStatus)
+
+		//And remove the pod - be nice and free up the resources
+		// otherwise on some systems we can run out of network addresses for instance
+		cmd = fmt.Sprintf("%s rm %s", ctx.Cmd(), podUUID)
+		spawnAndWaitOrFail(t, cmd, 0)
 	}
 }
