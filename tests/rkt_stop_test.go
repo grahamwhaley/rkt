@@ -339,7 +339,7 @@ func TestRktStop(t *testing.T) {
 		podUUID := runRktAndGetUUID(t, cmd)
 
 		// Run image
-		cmd = fmt.Sprintf("%s --insecure-options=image run-prepared --interactive %s", ctx.Cmd(), podUUID)
+		cmd = fmt.Sprintf("%s --debug --insecure-options=image run-prepared --interactive %s", ctx.Cmd(), podUUID)
 		child := spawnOrFail(t, cmd)
 
 		// Wait for prompt to make sure the pod is started
@@ -400,8 +400,10 @@ func TestRktStop(t *testing.T) {
 		//podInfo = getPodInfoVerbose(t, ctx, podUUID)
 
 		if !exitedSuccessfully {
-			//And now dump the info we got...to try and diagnose!
-			podInfo = getPodInfoVerbose(t, ctx, podUUID)
+			//We failed - try to extract some useful info so we can
+			//diagnose...
+			output := expectTimeoutWithOutput(child, "ThisStringWillNotBeFoundXXX", time.Second)
+			t.Logf(" Diagnostic Output: %s", output)
 			t.Fatalf("Expected pod %q to be exited, but it is %q after %s", podUUID, podInfo.state, stopTime.Sub(startTime))
 		}
 
