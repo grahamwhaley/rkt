@@ -364,7 +364,7 @@ func TestRktStop(t *testing.T) {
 			args = fmt.Sprintf("--uuid-file=%s", uuidFilePath)
 		}
 
-		runCmd := fmt.Sprintf("%s %s %s", ctx.Cmd(), tt.cmd, args)
+		runCmd := fmt.Sprintf("%s --debug %s %s", ctx.Cmd(), tt.cmd, args)
 		t.Logf("Running test #%d, %s", i, runCmd)
 		spawnTime := time.Now()
 		spawnOrFail(t, runCmd)
