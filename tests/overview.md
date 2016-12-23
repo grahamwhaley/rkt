@@ -9,6 +9,17 @@ running QEMU tests on my F24, we got:
  - 1 test timed out (panic)
     - TestSocketActivation (after 1h0m)
 
+running LKVM tests on my F24, we got:
+ - 81 tests passed
+ - 3 tests FAIL:
+    - TestGCAfterUnmount
+    - TestNetDefaultsNetNS
+    - TestNonRootReadInfo
+ - 1 test timed out (panic)
+    - TestSocketActivation (killed after 30m)
+
+Right now lkvm and qemu would see 'equivalent'.
+
 | File | kvm enbabled | lkvm ok | qemu ok | notes |
 | ---- | ------------ | ------- | ------- | ----- |
 | rkt_ace_validator_test.go | disabled | unk | unk  | awaiting test |
