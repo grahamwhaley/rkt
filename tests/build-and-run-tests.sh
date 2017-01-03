@@ -125,9 +125,16 @@ function parseParameters {
 # Configure build
 function configure {
     case "${RKT_STAGE1_USR_FROM}" in
-        coreos|kvm|fly)
+        coreos|fly)
         ./configure --with-stage1-flavors="${RKT_STAGE1_USR_FROM}" \
                 --with-stage1-default-flavor="${RKT_STAGE1_USR_FROM}" \
+                --enable-functional-tests --enable-tpm=auto \
+                --enable-insecure-go
+        ;;
+        kvm)
+        ./configure --with-stage1-flavors="${RKT_STAGE1_USR_FROM}" \
+                --with-stage1-default-flavor="${RKT_STAGE1_USR_FROM}" \
+                --with-stage1-kvm-hypervisors=qemu \
                 --enable-functional-tests --enable-tpm=auto \
                 --enable-insecure-go
         ;;
