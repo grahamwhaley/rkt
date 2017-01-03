@@ -402,8 +402,10 @@ func TestRktStop(t *testing.T) {
 		if !exitedSuccessfully {
 			//We failed - try to extract some useful info so we can
 			//diagnose...
-			output := expectTimeoutWithOutput(child, "ThisStringWillNotBeFoundXXX", time.Second)
-			t.Logf(" Diagnostic Output: %s", output)
+			result, output, err := expectRegexTimeoutWithOutput(child, "ThisStringWillNotBeFoundXXX", time.Second)
+			t.Logf(" Diagnostic Output res: %s", result)
+			t.Logf(" Diagnostic Output out: %s", output)
+			t.Logf(" Diagnostic Output err: %s", err)
 			t.Fatalf("Expected pod %q to be exited, but it is %q after %s", podUUID, podInfo.state, stopTime.Sub(startTime))
 		}
 
