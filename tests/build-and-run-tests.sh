@@ -181,7 +181,7 @@ function build {
         rm -rf "${BUILD_DIR}/tmp/usr_from_${RKT_STAGE1_USR_FROM}"
     fi
     if [[ ${JUSTBUILD} != true ]]; then
-        make check
+        make check GO_TEST_FUNC_ARGS='-run TestRktStop'
         make "-j${CORES}" clean
     fi
 }
