@@ -367,7 +367,10 @@ func TestRktStop(t *testing.T) {
 		runCmd := fmt.Sprintf("%s --debug %s %s", ctx.Cmd(), tt.cmd, args)
 		t.Logf("Running test #%d, %s", i, runCmd)
 		spawnTime := time.Now()
-		spawnOrFail(t, runCmd)
+		stopChild := spawnOrFail(t, runCmd)
+		// Wait for the stop to take effect
+		// and capture the output for debug
+		stopResult, stopOutput, stopErr := expectRegexTimeoutWithOutput(stopChild, "ThisStringWillNotBeFoundXXX", time.Second*5)
 
 		// Make sure the pod is stopped
 		exitedSuccessfully := false
@@ -406,6 +409,10 @@ func TestRktStop(t *testing.T) {
 			t.Logf(" Diagnostic Output res: %s", result)
 			t.Logf(" Diagnostic Output out: %s", output)
 			t.Logf(" Diagnostic Output err: %s", err)
+			// and dump the 'stop' command debug as well
+			t.Logf(" stop Diagnostic Output res: %s", stopResult)
+			t.Logf(" stop Diagnostic Output out: %s", stopOutput)
+			t.Logf(" stop Diagnostic Output err: %s", stopErr)
 			t.Fatalf("Expected pod %q to be exited, but it is %q after %s", podUUID, podInfo.state, stopTime.Sub(startTime))
 		}
 
