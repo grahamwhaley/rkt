@@ -48,21 +48,28 @@ func readIntFromFile(path string) (i int, err error) {
 func main() {
 	flag.Parse()
 
+	fmt.Fprintf(os.Stdout, "halt_kvm being callled...\n")
+
 	if force {
+		fmt.Fprintf(os.Stdout, " in force mode\n")
 		pid, err := readIntFromFile("pid")
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "error reading pid: %v\n", err)
 			os.Exit(254)
 		}
+		fmt.Fprintf(os.Stdout, " pid %d\n", pid)
 
 		if err := syscall.Kill(pid, syscall.SIGKILL); err != nil {
 			fmt.Fprintf(os.Stderr, "error sending %v: %v\n", syscall.SIGKILL, err)
 			os.Exit(254)
 		}
+		fmt.Fprintf(os.Stdout, " done force\n")
 		return
 	}
 
+	fmt.Fprintf(os.Stdout, " doing sysctl halt\n")
 	// ExecSSH() should return only with error
 	log.Error(ssh.ExecSSH([]string{"systemctl", "halt"}))
+	fmt.Fprintf(os.Stdout, " oh, sysctl halt seems to have failed?\n")
 	os.Exit(254)
 }

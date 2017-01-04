@@ -190,6 +190,9 @@ func ExecSSH(execArgs []string) error {
 	keyFile := sshPrivateKeyPath()
 	args := []string{
 		"ssh",
+		"-v",          // be verbose
+		"-v",          // and more verbose
+		"-v",          // and even more verbose
 		"-t",          // use tty
 		"-i", keyFile, // use keyfile
 		"-l", u.Username, // login as user
