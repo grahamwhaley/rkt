@@ -344,7 +344,7 @@ func TestRktStop(t *testing.T) {
 
 		// Wait for prompt to make sure the pod is started
 		if err := expectTimeoutWithOutput(child, "Enter text:", time.Minute); err != nil {
-			t.Fatalf("Can't start pod")
+			t.Fatalf("Can't start pod: %s", err)
 		}
 
 		//Just dump initial podinfo for reference
