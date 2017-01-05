@@ -367,7 +367,9 @@ func TestRktStop(t *testing.T) {
 		runCmd := fmt.Sprintf("%s --debug %s %s", ctx.Cmd(), tt.cmd, args)
 		t.Logf("Running test #%d, %s", i, runCmd)
 		spawnTime := time.Now()
-		spawnOrFail(t, runCmd)
+		stopExitStatus := 0
+		// Let's try waiting for the stop command to finish executing
+		spawnAndWaitOrFail(t, runCmd, stopExitStatus)
 
 		// Make sure the pod is stopped
 		exitedSuccessfully := false
